@@ -54,7 +54,7 @@ Other limitations include:
 2. Inability to visualise and analyse the model through graphing.
 3. Lack of influence analysis and ANOVA.
 4. Lack of hyperparameter tuning and cross-validation, requiring the user to supply the optimal parameters by themselves.
-5. Performance challenges on large datasets due to the Pure-Python structure.
+5. Performance challenges on large datasets due to the pure Python structure.
 These will be rectified in future versions with proper documentation and implementation, with possible releases in the pipeline as the library is enhanced through updates.
 
 #### Disclosure
