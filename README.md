@@ -42,7 +42,7 @@ pip install -e .              # Install in editable/development mode
 ```
 #### 2. Sample Usage
 
-The run_example.py file has a baseline implementation of the OLS method on the California Housing Dataset at scikit-learn(https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html). You can play around with the method_dict and analyse the results for multiple models at once, based on your requirements. 
+The run_example.py file has a baseline implementation of the OLS method on the California Housing Dataset at scikit-learn(https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html). Based on your requirements, you can play around with the method_dict and analyse the results for multiple models at once. Note that the mult parameter in the method dictionary is a common reference for the extra parameter in Lasso, Ridge and Huber regression, usually referred to as lambda, alpha and delta in many popular implementations. For example, method = 'lasso' would mean that mult carries the value of lambda in the L1 term of the MSE loss.
 
 ---
 
