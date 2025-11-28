@@ -261,7 +261,7 @@ class LinearRegSuper:
         #Diagnostics
         diag_lines = []
         for key, value in score_metrics.items():
-            diag_lines.append(f"{key}: {perc_fmt.format(value*100)}")
+            diag_lines.append(f"{key}: {perc_fmt.format(value)}")
         for key, value in eval_metrics.items():
             diag_lines.append(f"{key}: {float_fmt.format(value)}")
         for key, value in model_diag.items():
@@ -308,7 +308,7 @@ class LinearRegSuper:
             coef_s = float_fmt.format(coef) if np.isfinite(coef) else "nan"
             se_s = float_fmt.format(se) if np.isfinite(se) else "nan"
             t_s = float_fmt.format(tstat) if np.isfinite(tstat) else "nan"
-            p_s = perc_fmt.format(pval*100) if np.isfinite(pval) else "nan"
+            p_s = perc_fmt.format(pval) if np.isfinite(pval) else "nan"
             ub_s = float_fmt.format(ub) if np.isfinite(tstat) else "nan"
             lb_s = float_fmt.format(lb) if np.isfinite(tstat) else "nan"
             vif_s = float_fmt.format(vif) if np.isfinite(vif) else "nan"
@@ -383,4 +383,5 @@ class LinearRegSuper:
         # default generic names
 
         return [f"x{i+1}" for i in range(X.shape[1])]
+
 
