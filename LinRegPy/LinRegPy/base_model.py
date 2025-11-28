@@ -277,7 +277,7 @@ class LinearRegSuper:
         coeff_data.index.name = "Variable"
         coeff_cols = coeff_data.columns.tolist()
         new_cols = [
-            'Coefficients',
+            'Coefficient',
             'Std. Error',
             't-Statistic',
             'p-Value',
@@ -383,3 +383,4 @@ class LinearRegSuper:
         # default generic names
 
         return [f"x{i+1}" for i in range(X.shape[1])]
+
