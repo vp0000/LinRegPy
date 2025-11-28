@@ -21,7 +21,7 @@ class LinearRegSuper:
         """
         self.fit_intercept = fit_intercept
         self.method_dict = method_dict.copy()
-        self.w_init = w_init
+        self.w_init = w_init               # Useful only for gradient descent, assumed to be provided in original units
         self.optimizer = GradientDescent() # Initialize the separate optimizer class
         self.incp = 0.0                    # Fitted intercept
         self.coeff = np.array([])          # Fitted coefficients (excluding intercept)
@@ -31,9 +31,15 @@ class LinearRegSuper:
         self.stds = None
         self._fitted = False
         self._grad_desc = False
-        self.feature_names = None
     
     def fit(self, X, y):
+        """
+        Fits the defined LinearRegSuper model on X to predict y. Please note that X should not contain the intercept column.
+        The library handles that internally using the fit_intercept flag.
+
+        :param X: Data strcuture containing the predictor variables. These need not be scaled as the library handles it.
+        :param y: Response variable vector
+        """
         X = np.asarray(X, dtype=float)
         y = np.asarray(y, dtype=float)
         incp_flag = self.fit_intercept
@@ -72,10 +78,11 @@ class LinearRegSuper:
 
         # Build initial w_0 (in internal scaled coordinate system if scaling used)
         if self.w_init is not None:
-            # if scale was applied, convert user-supplied w_init (assumed in original units)
+            # if scale is to be applied, convert user-supplied w_init (assumed in original units)
             w_0 = self.w_init.copy()
             if self.scale:
                 if incp_flag:
+                    w_0[0] = w_0[0] + np.sum(self.means * w_0[1:]) # intercept_scaled = intercept_raw + sum(mean(coeff) * coeff))
                     w_0[1:] = w_0[1:] * self.stds  # beta_scaled = beta_raw * stds
                 else:
                     w_0 = w_0 * self.stds
@@ -111,8 +118,8 @@ class LinearRegSuper:
             reg_mult = method_params.get('mult', 0.0)
 
             # Build reg matrix carefully. Two choices:
-            # A) reg in scaled space (alpha applies after scaling): reg = alpha * I
-            # B) reg in original units (alpha interpreted on original X): reg diagonal scaled by std^2
+            # A) reg in scaled space coefficients(alpha applies after scaling): reg = alpha * I
+            # B) reg in original coefficients (alpha interpreted on original X): reg diagonal scaled by std^2
             # Here I implement B (alpha in original units) since that's usually what users expect.
             if method_name == 'ridge':
                 reg = np.zeros((m, m))
@@ -124,13 +131,13 @@ class LinearRegSuper:
                     if self.scale:
                         assert self.stds is not None
                         # self.stds is length p (features only)
-                        reg[1:, 1:] = np.diag(reg_mult * (self.stds**2))
+                        reg[1:, 1:] = np.diag(reg_mult / (self.stds**2))
                     else:
                         reg[1:, 1:] = np.diag(np.repeat(reg_mult, m - 1))
                 else:
                     if self.scale:
                         assert self.stds is not None
-                        reg[:] = np.diag(np.concatenate(([0.0], reg_mult * (self.stds**2))))[:m, :m]
+                        reg = np.diag(reg_mult / (self.stds**2))
                     else:
                         reg = np.identity(m) * reg_mult
             else:
@@ -221,7 +228,7 @@ class LinearRegSuper:
         
         return {'MSE': mse, 'MAE': mae, 'RMSE': rmse}
 
-    def summary_report(self, X, y, feature_names=None, float_fmt="{:0.4f}", perc_fmt="{:0.2%}"):
+    def summary_report(self, X, y, feature_names=None, float_fmt="{:0.4f}", perc_fmt="{:0.2%}", report_print=True):
         """
         Generates a detailed regression summary report including coefficients,
         standard errors, t-stats, p-values, and overall model metrics.
@@ -311,8 +318,8 @@ class LinearRegSuper:
             se_s = float_fmt.format(se) if np.isfinite(se) else "nan"
             t_s = float_fmt.format(tstat) if np.isfinite(tstat) else "nan"
             p_s = perc_fmt.format(pval) if np.isfinite(pval) else "nan"
-            ub_s = float_fmt.format(ub) if np.isfinite(tstat) else "nan"
-            lb_s = float_fmt.format(lb) if np.isfinite(tstat) else "nan"
+            ub_s = float_fmt.format(ub) if np.isfinite(ub_s) else "nan"
+            lb_s = float_fmt.format(lb) if np.isfinite(lb_s) else "nan"
             vif_s = float_fmt.format(vif) if np.isfinite(vif) else "nan"
 
             table_lines.append("{:20s} {:>12s} {:>12s} {:>10s} {:>10s} {:>8s} {:>8s} {:>8s}".format(
@@ -378,16 +385,3 @@ class LinearRegSuper:
         y = np.asarray(y, dtype=float)
         y_hat = self.predict(X)
         return X, y, y_hat
-    
-    def _get_feature_names(self, X, feature_names=None):
-        if feature_names is not None:
-            return feature_names
-        # default generic names
-
-        return [f"x{i+1}" for i in range(X.shape[1])]
-
-
-
-
-
-
