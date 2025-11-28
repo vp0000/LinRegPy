@@ -265,7 +265,7 @@ class LinearRegSuper:
         for key, value in eval_metrics.items():
             diag_lines.append(f"{key}: {float_fmt.format(value)}")
         for key, value in model_diag.items():
-            for k, v in val.items():
+            for k, v in value.items():
                 diag_lines.append("\n")
                 diag_lines.append(f"{k.split('_')[1]}: {float.fmt.format(v)}")
 
@@ -385,6 +385,7 @@ class LinearRegSuper:
         # default generic names
 
         return [f"x{i+1}" for i in range(X.shape[1])]
+
 
 
 
