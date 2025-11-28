@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='PyStatLin',  # The package name for imports (e.g., from PyStatLin.base_model import ...)
+    name='LinRegPy',  # The package name for imports (e.g., from LinRegPy.base_model import ...)
     version='0.1.0',
     description='A NumPy-based Linear Regression Library with Diagnostics (Hobby Project)',
     author='Your Name',
@@ -17,4 +17,5 @@ setup(
     ],
     
     python_requires='>=3.8',
+
 )
