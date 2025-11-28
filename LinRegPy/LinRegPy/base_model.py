@@ -183,7 +183,7 @@ class LinearRegSuper:
         X must NOT contain the intercept column.
         """
         X = np.asarray(X, dtype=float)
-        if self._fitted == False:
+        if not self._fitted:
             raise ValueError("Error: Model not fitted, please use fit() before predict()")
         return np.dot(X, self.coeff) + self.incp
 
@@ -231,13 +231,14 @@ class LinearRegSuper:
     def summary_report(self, X, y, feature_names=None, float_fmt="{:0.4f}", perc_fmt="{:0.2%}", report_print=True):
         """
         Generates a detailed regression summary report including coefficients,
-        standard errors, t-stats, p-values, and overall model metrics.
+        standard errors, t-stats, p-values, and overall model metrics in the form of a dictionary.
+        Can print the report in a standardized format if the user wants to based on report_print.
         """
         X = np.asarray(X, dtype=float)
         y = np.asarray(y, dtype=float)
         n, p = X.shape  # n = samples, p = features (excluding intercept)
 
-        if self._fitted == False:
+        if not self._fitted:
             raise ValueError("Error: Model not fitted, please use fit() before summary_report()")
 
         # Prepare feature names
@@ -272,7 +273,7 @@ class LinearRegSuper:
         for key, value in eval_metrics.items():
             diag_lines.append(f"{key}: {float_fmt.format(value)}")
         for key, value in model_diag.items():
-            diag_lines.append(f"{key}":)
+            diag_lines.append(f"{key}:")
             for k, v in value.items():
                 diag_lines.append(f"{k.split('_')[1]}: {float_fmt.format(v)}")
 
@@ -318,8 +319,8 @@ class LinearRegSuper:
             se_s = float_fmt.format(se) if np.isfinite(se) else "nan"
             t_s = float_fmt.format(tstat) if np.isfinite(tstat) else "nan"
             p_s = perc_fmt.format(pval) if np.isfinite(pval) else "nan"
-            ub_s = float_fmt.format(ub) if np.isfinite(ub_s) else "nan"
-            lb_s = float_fmt.format(lb) if np.isfinite(lb_s) else "nan"
+            ub_s = float_fmt.format(ub) if np.isfinite(ub) else "nan"
+            lb_s = float_fmt.format(lb) if np.isfinite(lb) else "nan"
             vif_s = float_fmt.format(vif) if np.isfinite(vif) else "nan"
 
             table_lines.append("{:20s} {:>12s} {:>12s} {:>10s} {:>10s} {:>8s} {:>8s} {:>8s}".format(
@@ -327,18 +328,58 @@ class LinearRegSuper:
             ))
         
         # Combine all parts into final report
-        report_lines = []
-        report_lines.append("\n".join(hdr_lines))
-        report_lines.append("\nCoefficient Estimates:")
-        report_lines.append("\n".join(table_lines))
-        report_lines.append("\nModel Diagnostics:")
-        report_lines.append("\n".join(diag_lines))
-        report_lines.append("- Note: For non-OLS methods, inference statistics may not be valid.")
-        report_lines.append("- VIF > 5 indicates moderate multicollinearity; >10 indicates high multicollinearity.")
-        report_lines.append("- BP p-value < 0.05 indicates heteroscedasticity.")
-        report_lines.append("- JB p-value < 0.05 indicates non-normal residuals.")
-        print("\n".join(report_lines))
-        return report_lines
+
+        summary = {
+            "header": {
+                "title": hdr_lines[0],                        # "OLS Regression Results" or "RIDGE Regression Results", etc.
+                "date": hdr_lines[1].split("Date: ", 1)[1],   # or just datetime.now().strftime(...)
+                "method": self.method_dict.get("name", "ols"),
+                "scale_applied": bool(self.scale),
+                "gradient_descent_used": bool(self._grad_desc),
+                "n_obs": int(X.shape[0]),
+                "degrees_of_freedom": int(n - (p + 1) if self.fit_intercept else n - p),
+            },
+        
+            "coefficients": coeff_data,   # pandas DataFrame with Coefficient, Std. Error, t-Statistic, p-Value, CI, VIF
+        
+            "metrics": {
+                "R^2": score_metrics["R^2"],
+                "Adj. R^2": score_metrics["Adj. R^2"],
+                "MSE": eval_metrics["MSE"],
+                "RMSE": eval_metrics["RMSE"],
+                "MAE": eval_metrics["MAE"],
+            },
+        
+            "diagnostics": {
+                # model_diag is already a dict of dicts from ModelDiagnostics
+                "global": model_diag,          # e.g. BP/JB/F tests, etc.
+                "vif": model_vifs,            # array-like of VIFs, aligned with coeff_data rows (except intercept)
+            },
+        
+            "raw": {
+                "coeff_vector": coeffs,        # including intercept if fit_intercept=True
+                "residuals": resids,
+                "y_true": y,
+                "y_pred": self.predict(X),
+            },
+        
+            "text_report": "\n".join(report_lines),
+        }
+
+        if report_print:
+            report_lines = []
+            report_lines.append("\n".join(hdr_lines))
+            report_lines.append("\nCoefficient Estimates:")
+            report_lines.append("\n".join(table_lines))
+            report_lines.append("\nModel Diagnostics:")
+            report_lines.append("\n".join(diag_lines))
+            report_lines.append("- Note: For non-OLS methods, inference statistics may not be valid.")
+            report_lines.append("- VIF > 5 indicates moderate multicollinearity; >10 indicates high multicollinearity.")
+            report_lines.append("- BP p-value < 0.05 indicates heteroscedasticity.")
+            report_lines.append("- JB p-value < 0.05 indicates non-normal residuals.")
+            print("\n".join(report_lines))
+            
+        return summary
 
     def get_final_params(self):
         """Returns the fitted intercept and feature coefficients."""
@@ -385,3 +426,4 @@ class LinearRegSuper:
         y = np.asarray(y, dtype=float)
         y_hat = self.predict(X)
         return X, y, y_hat
+
