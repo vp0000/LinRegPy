@@ -49,7 +49,7 @@ Please note that scikit-learn is a dependency used solely for baseline evaluatio
 
 The run_example.py file has a baseline implementation of the OLS method on the California Housing Dataset at scikit-learn(https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html). Based on your requirements, you can play around with the method_dict and analyse the results for multiple models at once. 
 
-Note that the mult parameter in the method dictionary is used as a common reference for the extra parameter in the loss function in Lasso, Ridge and Huber regression, usually referred to as lambda, alpha and delta in many popular implementations:
+Note that the mult parameter in the method dictionary is used as a common reference for the extra parameter in the loss function in Lasso, Ridge and Huber regression, usually referred to as $\lambda$, $\alpha$ and $\delta$ in many popular implementations:
 
 $$\mathcal{L}_{\text{lasso}}(\beta_0, \beta) = \sum_{i=1}^{n} \left( y_i - \beta_0 - x_i^{\top}\beta \right)^{2} +\lambda \sum_{j=1}^{p} |\beta_j|$$
 $$\mathcal{L}_{\text{ridge}}(\beta_0, \beta) = \sum_{i=1}^{n} \left( y_i - \beta_0 - x_i^{\top}\beta \right)^{2} +\alpha \sum_{j=1}^{p} \beta_j^{2}$$
@@ -58,15 +58,15 @@ $$
 \ell_{\delta}(r_i) =
 \begin{cases}
 \frac{1}{2}r_i^{2}, & |r_i|\le\delta,\\\\
-\delta |r_i| - \frac{1}{2}\delta^{2}, & |r_i|>\delta.
+\delta|r_i| - \frac{1}{2}\delta^{2}, & |r_i|>\delta.
 \end{cases}
 $$
 $$\mathcal{L}_{\text{huber}}(\beta_0, \beta) = \sum_{i=1}^{n} \ell_{\delta}(r_i).$$
-$$\begin{aligned}
-where,
+$$
+\begin{aligned}
+\textbf{where:} \\
 & n && \text{Number of observations (rows in the dataset)} \\
 & p && \text{Number of predictor variables (columns in } X \text{)} \\
-& X \in \mathbb{R}^{n \times p} && \text{Design matrix of predictor variables} \\
 & x_i \in \mathbb{R}^{p} && \text{Feature vector for the } i\text{-th observation} \\
 & y \in \mathbb{R}^{n} && \text{Response vector} \\
 & y_i && \text{Response value for the } i\text{-th observation} \\
@@ -75,10 +75,11 @@ where,
 & \beta_j && \text{Coefficient for predictor } j \\
 & \hat{y}_i = \beta_0 + x_i^{\top}\beta && \text{Predicted value for observation } i \\
 & r_i = y_i - \hat{y}_i && \text{Residual for observation } i \\
-& \lambda && \text{Lasso or Ridge regularization strength (L1 or L2)} \\
+& \lambda && \text{Lasso regularization strength (L1)} \\
 & \alpha && \text{Alternative notation for Ridge penalty (same role as } \lambda \text{)} \\
 & \delta && \text{Huber threshold that controls quadratic vs linear behavior} \\
-\end{aligned}$$
+\end{aligned}
+$$
 
 An example method_dict for this could be:
 
@@ -98,7 +99,7 @@ method_dict = {
 
 This is a hobby project aimed at understanding the backend processes used by ML libraries such as scikit-learn and statsmodels to name a few, and is not intended for production as of now.
 Other limitations include:
-1. Inability to choose between methods for gradient descent and diagnostic tests based on user input, relying on baselines implemented internally for now.
+1. Inability to choose between methods for gradient descent and diagnostic tests based on user input, relying on baselines implemented internally for now. This also includes regression variants based on Elastic Net, which uses a combined L1 and L2-norm penalty.
 2. Inability to visualise and analyse the model through graphing options.
 3. Lack of influence analysis and ANOVA for more enhanced diagnostics.
 4. Lack of hyperparameter tuning and cross-validation, requiring the user to supply the optimal parameters by themselves.
