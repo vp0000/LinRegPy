@@ -35,8 +35,8 @@ Crucially, the final coefficients and intercept are **unscaled** back to the ori
 Clone the repository and install the required dependencies in development mode:
 
 ```bash
-git clone [https://github.com/YourUsername/PyStatLin.git](https://github.com/YourUsername/PyStatLin.git)
-cd PyStatLin
+git clone https://github.com/vp0000/LinRegPy.git
+cd LinRegPy
 pip install numpy pandas scipy # Install requirements
 pip install -e .              # Install in editable/development mode
 ```
