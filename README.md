@@ -55,11 +55,11 @@ Note that the mult parameter in the method dictionary is a common reference for 
 
 ### Limitations and Scope
 
-This is a hobby project aimed at understanding the backend processes used by ML libraries and scikit-learn and statsmodels, and is not intended for production as of now.
+This is a hobby project aimed at understanding the backend processes used by ML libraries such as scikit-learn and statsmodels to name a few, and is not intended for production as of now.
 Other limitations include:
-1. Inability to choose between methods for gradient descent and diagnostic tests based on user input.
-2. Inability to visualise and analyse the model through graphing.
-3. Lack of influence analysis and ANOVA.
+1. Inability to choose between methods for gradient descent and diagnostic tests based on user input, relying on baselines implemented internally for now.
+2. Inability to visualise and analyse the model through graphing options.
+3. Lack of influence analysis and ANOVA for more enhanced diagnostics.
 4. Lack of hyperparameter tuning and cross-validation, requiring the user to supply the optimal parameters by themselves.
 5. Performance challenges on large datasets due to the pure Python structure.
 
