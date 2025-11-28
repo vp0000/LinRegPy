@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 from typing import Dict
-from optimizer import GradientDescent
-from diagnostics import ModelDiagnostics
+from .optimizer import GradientDescent
+from .diagnostics import ModelDiagnostics
 from datetime import datetime
 import pickle as pkl
 
@@ -381,4 +381,5 @@ class LinearRegSuper:
         if feature_names is not None:
             return feature_names
         # default generic names
+
         return [f"x{i+1}" for i in range(X.shape[1])]
