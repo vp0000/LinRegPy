@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
-from LinRegPy import *
+from LinRegPy.base_model import LinRegSuper
 
 # --- 1. Data Loading and Splitting ---
 housing = fetch_california_housing()
@@ -27,5 +27,6 @@ for method in [method_3, method_4]:
 
     # save to file
     lin_model.save_model(f"Housing_Model_{method['name']}.pkl")
+
 
 
