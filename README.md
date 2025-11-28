@@ -49,7 +49,48 @@ Please note that scikit-learn is a dependency used solely for baseline evaluatio
 
 The run_example.py file has a baseline implementation of the OLS method on the California Housing Dataset at scikit-learn(https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html). Based on your requirements, you can play around with the method_dict and analyse the results for multiple models at once. 
 
-Note that the mult parameter in the method dictionary is a common reference for the extra parameter in Lasso, Ridge and Huber regression, usually referred to as lambda, alpha and delta in many popular implementations. For example, method = 'lasso' would mean that mult carries the value of lambda in the L1 term of the MSE based loss in linear regression. 
+Note that the mult parameter in the method dictionary is used as a common reference for the extra parameter in the loss function in Lasso, Ridge and Huber regression, usually referred to as lambda, alpha and delta in many popular implementations:
+
+$$\mathcal{L}_{\text{lasso}}(\beta_0, \beta) = \sum_{i=1}^{n} \left( y_i - \beta_0 - x_i^{\top}\beta \right)^{2} +\lambda \sum_{j=1}^{p} |\beta_j|$$
+$$\mathcal{L}_{\text{ridge}}(\beta_0, \beta) = \sum_{i=1}^{n} \left( y_i - \beta_0 - x_i^{\top}\beta \right)^{2} +\alpha \sum_{j=1}^{p} \beta_j^{2}$$
+$$r_i = y_i - \beta_0 - x_i^{\top}\beta$$
+$$
+\ell_{\delta}(r_i) =
+\begin{cases}
+\frac{1}{2}r_i^{2}, & |r_i|\le\delta,\\\\
+\delta |r_i| - \frac{1}{2}\delta^{2}, & |r_i|>\delta.
+\end{cases}
+$$
+$$\mathcal{L}_{\text{huber}}(\beta_0, \beta) = \sum_{i=1}^{n} \ell_{\delta}(r_i).$$
+$$\begin{aligned}
+where,
+& n && \text{Number of observations (rows in the dataset)} \\
+& p && \text{Number of predictor variables (columns in } X \text{)} \\
+& X \in \mathbb{R}^{n \times p} && \text{Design matrix of predictor variables} \\
+& x_i \in \mathbb{R}^{p} && \text{Feature vector for the } i\text{-th observation} \\
+& y \in \mathbb{R}^{n} && \text{Response vector} \\
+& y_i && \text{Response value for the } i\text{-th observation} \\
+& \beta_0 \in \mathbb{R} && \text{Intercept term (not regularized)} \\
+& \beta \in \mathbb{R}^{p} && \text{Coefficient vector} \\
+& \beta_j && \text{Coefficient for predictor } j \\
+& \hat{y}_i = \beta_0 + x_i^{\top}\beta && \text{Predicted value for observation } i \\
+& r_i = y_i - \hat{y}_i && \text{Residual for observation } i \\
+& \lambda && \text{Lasso or Ridge regularization strength (L1 or L2)} \\
+& \alpha && \text{Alternative notation for Ridge penalty (same role as } \lambda \text{)} \\
+& \delta && \text{Huber threshold that controls quadratic vs linear behavior} \\
+\end{aligned}$$
+
+An example method_dict for this could be:
+
+```
+method_dict = {
+'name': 'huber',  # Name of regression method, can be 'huber', 'ols', 'lasso' and 'ridge'
+'mult': 1.0,  # Additional loss parameter as mentioned above
+'lr': 1e-3,  # Learning rate for Gradient Descent
+'n_iter': 10000,  # Number of iterations for Gradient Descent
+'use_gd': True   # Flag to indicate if Gradient Descent is to be used in a non-default situation
+}
+```
 
 ---
 
