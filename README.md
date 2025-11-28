@@ -34,9 +34,11 @@ Crucially, the final coefficients and intercept are **unscaled** back to the ori
 
 Clone the repository and install the required dependencies in development mode:
 
-```bash
+```cmd
 git clone https://github.com/vp0000/LinRegPy.git
 cd LinRegPy/LinRegPy
+python -m venv Env_Name  # Assumes Python is present on the local machine, change Env_Name to the name you want
+Env_Name/Scripts/Activate.bat  # Activates the environment
 pip install -e .              # Install in editable/development mode
 pip install scikit-learn     # Modify based on run_example.py
 ```
@@ -45,7 +47,9 @@ Please note that scikit-learn is a dependency used solely for baseline evaluatio
 
 #### 2. Sample Usage
 
-The run_example.py file has a baseline implementation of the OLS method on the California Housing Dataset at scikit-learn(https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html). Based on your requirements, you can play around with the method_dict and analyse the results for multiple models at once. Note that the mult parameter in the method dictionary is a common reference for the extra parameter in Lasso, Ridge and Huber regression, usually referred to as lambda, alpha and delta in many popular implementations. For example, method = 'lasso' would mean that mult carries the value of lambda in the L1 term of the MSE loss.
+The run_example.py file has a baseline implementation of the OLS method on the California Housing Dataset at scikit-learn(https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html). Based on your requirements, you can play around with the method_dict and analyse the results for multiple models at once. 
+
+Note that the mult parameter in the method dictionary is a common reference for the extra parameter in Lasso, Ridge and Huber regression, usually referred to as lambda, alpha and delta in many popular implementations. For example, method = 'lasso' would mean that mult carries the value of lambda in the L1 term of the MSE based loss in linear regression. 
 
 ---
 
@@ -58,6 +62,7 @@ Other limitations include:
 3. Lack of influence analysis and ANOVA.
 4. Lack of hyperparameter tuning and cross-validation, requiring the user to supply the optimal parameters by themselves.
 5. Performance challenges on large datasets due to the pure Python structure.
+
 These will be rectified in future versions with proper documentation and implementation, with possible releases in the pipeline as the library is enhanced through updates.
 
 #### Disclosure
