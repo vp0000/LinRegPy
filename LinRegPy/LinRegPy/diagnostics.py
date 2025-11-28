@@ -111,11 +111,10 @@ class ModelDiagnostics:
             X = self._add_intercept_column(X)
         ht = self.hypothesis_testing(X, resids, coeffs, conf_inv)
         regression_diag = {
-            "VIF": vifs,
             "Breusch-Pagan": BP,
-            "Jarque-Bera": JB,
-            "Hypothesis Testing": ht
+            "Jarque-Bera": JB
         }
-        return regression_diag
+        return regression_diag, ht, vifs
         
+
 
