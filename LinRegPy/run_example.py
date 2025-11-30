@@ -22,11 +22,12 @@ for method in [method_3, method_4]:
     lin_model.fit(X_train, y_train)
 
     # textual summary
-    txt = lin_model.summary_text(X_test, y_test, feature_names=feature_names)
+    txt = lin_model.summary_report(X_test, y_test, feature_names=feature_names, report_print=True)
     print("---------------------------------------------")
 
     # save to file
     lin_model.save_model(f"Housing_Model_{method['name']}.pkl")
+
 
 
 
